@@ -1,0 +1,28 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  tags: ["ddl", "snapshot", "pace"]
+}
+
+CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_pace`
+OPTIONS(location="${dataform.projectConfig.defaultLocation}");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_property` AS
+SELECT *
+FROM `${dataform.projectConfig.defaultProject}.stg.stg_pace_property`
+WHERE 1 = 0;
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_segment` AS
+SELECT *
+FROM `${dataform.projectConfig.defaultProject}.stg.stg_pace_segment`
+WHERE 1 = 0;
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_roomclass` AS
+SELECT *
+FROM `${dataform.projectConfig.defaultProject}.stg.stg_pace_roomclass`
+WHERE 1 = 0;
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_roomtype` AS
+SELECT *
+FROM `${dataform.projectConfig.defaultProject}.stg.stg_pace_roomtype`
+WHERE 1 = 0;
