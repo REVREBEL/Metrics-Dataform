@@ -1,0 +1,35 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  tags: ["ddl", "views", "pace"]
+}
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultProject}.metrics_pace.vw_pace_property` AS
+SELECT
+  p.*,
+  SAFE_DIVIDE(p.rev_otb, NULLIF(p.rms_otb, 0)) AS adr_otb_calc,
+  SAFE_DIVIDE(p.rms_otb, NULLIF(p.available_rms, 0)) AS occ_otb_calc,
+  SAFE_DIVIDE(p.rev_otb, NULLIF(p.available_rms, 0)) AS revpar_otb_calc
+FROM `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_property` p;
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultProject}.metrics_pace.vw_pace_segment` AS
+SELECT
+  s.*,
+  SAFE_DIVIDE(s.rev_otb, NULLIF(s.rms_otb, 0)) AS adr_otb_calc
+FROM `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_segment` s;
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultProject}.metrics_pace.vw_pace_roomclass` AS
+SELECT
+  rc.*,
+  SAFE_DIVIDE(rc.rev_otb, NULLIF(rc.rms_otb, 0)) AS adr_otb_calc,
+  SAFE_DIVIDE(rc.rms_otb, NULLIF(rc.available_rms, 0)) AS occ_otb_calc,
+  SAFE_DIVIDE(rc.rev_otb, NULLIF(rc.available_rms, 0)) AS revpar_otb_calc
+FROM `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_roomclass` rc;
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultProject}.metrics_pace.vw_pace_roomtype` AS
+SELECT
+  rt.*,
+  SAFE_DIVIDE(rt.rev_otb, NULLIF(rt.rms_otb, 0)) AS adr_otb_calc,
+  SAFE_DIVIDE(rt.rms_otb, NULLIF(rt.available_rms, 0)) AS occ_otb_calc,
+  SAFE_DIVIDE(rt.rev_otb, NULLIF(rt.available_rms, 0)) AS revpar_otb_calc
+FROM `${dataform.projectConfig.defaultProject}.metrics_pace.snap_pace_roomtype` rt;
