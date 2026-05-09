@@ -4,7 +4,7 @@ config {
   tags: ["ddl", "facts", "actual", "pickup", "plan", "pricing"]
 }
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_actual_property` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_actual_property` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   date DATE OPTIONS(description="Business/stay date."),
@@ -28,7 +28,7 @@ PARTITION BY date
 CLUSTER BY property_code
 OPTIONS(description="Property-level actualized historical performance.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_actual_segment` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_actual_segment` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   date DATE OPTIONS(description="Business/stay date."),
@@ -62,7 +62,7 @@ PARTITION BY date
 CLUSTER BY property_code, segment_code
 OPTIONS(description="Segment-level actualized historical performance.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_actual_source` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_actual_source` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   date DATE OPTIONS(description="Business/stay date."),
@@ -94,7 +94,7 @@ PARTITION BY date
 CLUSTER BY property_code, source_code
 OPTIONS(description="Source/channel-level actualized historical performance.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_actual_roomtype` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_actual_roomtype` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   date DATE OPTIONS(description="Business/stay date."),
@@ -128,7 +128,7 @@ PARTITION BY date
 CLUSTER BY property_code, roomtype_code
 OPTIONS(description="Roomtype-level actualized historical performance.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_pickup_property` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_pickup_property` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   snap_date DATE OPTIONS(description="Snapshot date."),
@@ -147,7 +147,7 @@ PARTITION BY snap_date
 CLUSTER BY property_code, date, comparison, pickup_window
 OPTIONS(description="Property-level pickup metrics by comparison and pickup window.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_pickup_segment` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_pickup_segment` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   snap_date DATE OPTIONS(description="Snapshot date."),
@@ -173,7 +173,7 @@ PARTITION BY snap_date
 CLUSTER BY property_code, date, segment_code, comparison
 OPTIONS(description="Segment-level pickup metrics by comparison and pickup window.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_pickup_source` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_pickup_source` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   snap_date DATE OPTIONS(description="Snapshot date."),
@@ -200,7 +200,7 @@ PARTITION BY snap_date
 CLUSTER BY property_code, date, source_code, comparison
 OPTIONS(description="Source/channel-level pickup metrics by comparison and pickup window.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_pickup_roomtype` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_pickup_roomtype` (
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
   snap_date DATE OPTIONS(description="Snapshot date."),
@@ -229,7 +229,7 @@ PARTITION BY snap_date
 CLUSTER BY property_code, date, roomtype_code, comparison
 OPTIONS(description="Roomtype-level pickup metrics by comparison and pickup window.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_manual_plan` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_manual_plan` (
   plan_id STRING OPTIONS(description="Unique planning row identifier."),
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
@@ -268,7 +268,7 @@ PARTITION BY date
 CLUSTER BY property_code, plan_type, scenario, metric_code
 OPTIONS(description="Manual forecast, budget, scenario, and override writeback table for user-entered planning values.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_price_shop` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_price_shop` (
   price_shop_id STRING OPTIONS(description="Unique pricing observation identifier."),
   property_code STRING OPTIONS(description="Property code."),
   property_name STRING OPTIONS(description="Property name."),
@@ -324,7 +324,7 @@ PARTITION BY shop_date
 CLUSTER BY property_code, date, shop_channel, price_type
 OPTIONS(description="Pricing observation table for BAR, lowest available, OTA, CRS, booking engine, rate shop, and competitive pricing data.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.${dataform.projectConfig.defaultDataset}.fact_metric_observation` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.${dataform.projectConfig.defaultDataset}.fact_metric_observation` (
   property_code STRING OPTIONS(description="Property code."),
   date DATE OPTIONS(description="Metric date."),
   snap_date DATE OPTIONS(description="Snapshot date, if applicable."),
