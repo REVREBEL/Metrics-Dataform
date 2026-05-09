@@ -4,10 +4,10 @@ config {
   tags: ["ddl", "core", "dimensions", "mappings", "lookups"]
 }
 
-CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core`
+CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core`
 OPTIONS(location="${dataform.projectConfig.defaultLocation}");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.dim_property` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_property` (
   property_code STRING OPTIONS(description="Primary property code."),
   property_name STRING OPTIONS(description="Standard property name."),
   property_shortname STRING OPTIONS(description="Short property name used for BI display."),
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Standard property/hotel reference table.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.dim_date` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_date` (
   stay_date DATE OPTIONS(description="Hotel stay, occupancy, or service date."),
   date_key INT64 OPTIONS(description="YYYYMMDD date key."),
   year INT64 OPTIONS(description="Calendar year."),
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Calendar/date dimension using stay_date as the hotel service-date grain.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.dim_segment` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment` (
   segment STRING OPTIONS(description="Standard segment name."),
   segment_code STRING OPTIONS(description="Standard segment code."),
   segment_group STRING OPTIONS(description="Standard segment group name."),
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Standard segment reference table.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.dim_roomtype` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_roomtype` (
   property_code STRING OPTIONS(description="Property code."),
   roomtype STRING OPTIONS(description="Standard roomtype name."),
   roomtype_code STRING OPTIONS(description="Standard roomtype code."),
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Standard room type and room class reference table.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.dim_metric` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_metric` (
   metric_code STRING OPTIONS(description="Standard metric code."),
   metric_name STRING OPTIONS(description="Display name."),
   metric_category STRING OPTIONS(description="Metric category such as Revenue, Rooms, Rate, Occupancy, Demand, or Pickup."),
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Metric dictionary and calculation rules.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.dim_source_report` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_source_report` (
   source_report_id STRING OPTIONS(description="Unique source report identifier."),
   source_system STRING OPTIONS(description="PMS, RMS, CRS, booking engine, manual, or other source system."),
   source_report STRING OPTIONS(description="Source report name."),
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Metadata for imported files, reports, and source systems.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.map_segment` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment` (
   property_code STRING OPTIONS(description="Property code."),
   source_system STRING OPTIONS(description="Source system."),
   segment_map STRING OPTIONS(description="Source segment value."),
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Maps source segment names and codes to standardized segment values.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.map_roomtype` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_roomtype` (
   property_code STRING OPTIONS(description="Property code."),
   source_system STRING OPTIONS(description="Source system."),
   roomtype_map STRING OPTIONS(description="Source roomtype value."),
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Maps source roomtype names and codes to standardized roomtype, roomclass, bedtype, and optional roompool values.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.lkp_source_system` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_system` (
   source_system STRING OPTIONS(description="Allowed source system name."),
   source_system_category STRING OPTIONS(description="Source system category such as PMS, RMS, CRS, Demand, Pricing, Web, Finance, Sales, or Manual."),
   is_active BOOL OPTIONS(description="Active flag."),
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Controlled lookup list for source systems.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.lkp_report_type` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_report_type` (
   report_type STRING OPTIONS(description="Allowed report type."),
   description STRING OPTIONS(description="Report type description."),
   is_active BOOL OPTIONS(description="Active flag."),
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_cor
 )
 OPTIONS(description="Controlled lookup list for report types.");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultProject}.metrics_core.lkp_metric_type` (
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_metric_type` (
   metric_type STRING OPTIONS(description="Allowed metric type."),
   description STRING OPTIONS(description="Metric type description."),
   is_active BOOL OPTIONS(description="Active flag."),
