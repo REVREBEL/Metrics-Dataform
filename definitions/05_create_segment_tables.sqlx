@@ -56,6 +56,39 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
 )
 OPTIONS(description="Maps source-system segment values to standardized commercial and finance segment values.");
 
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS property_code STRING OPTIONS(description="Property code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS system STRING OPTIONS(description="Source system providing the segment value.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS code STRING OPTIONS(description="Source-system segment code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS name STRING OPTIONS(description="Source-system segment name or label.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS description STRING OPTIONS(description="Source-system segment description, if supplied.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS segment_code STRING OPTIONS(description="Standard commercial segment code. Joins to lkp_segment.code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS finance_segment_code STRING OPTIONS(description="Standard finance segment code. Joins to lkp_finance_segment.code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS gl_code STRING OPTIONS(description="General ledger or guest ledger code associated with the mapped segment, when available.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS is_active BOOL OPTIONS(description="Active flag.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS insert_date DATE OPTIONS(description="Insert date.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS updated_date DATE OPTIONS(description="Updated date.");
+
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment` (
   property_code STRING OPTIONS(description="Property code."),
   map_segment_code STRING OPTIONS(description="Source segment code from map_segment.code. Used to resolve incoming source data."),
@@ -68,6 +101,33 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   updated_date DATE OPTIONS(description="Updated date.")
 )
 OPTIONS(description="Production segment reference used by ingestion, facts, snapshots, and reporting.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS property_code STRING OPTIONS(description="Property code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS map_segment_code STRING OPTIONS(description="Source segment code from map_segment.code. Used to resolve incoming source data.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS segment_code STRING OPTIONS(description="Standard commercial segment code. Joins to lkp_segment.code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS segment_group_code STRING OPTIONS(description="Standard segment group code. Usually inherited from lkp_segment.segment_group_code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS finance_segment_code STRING OPTIONS(description="Standard finance segment code. Joins to lkp_finance_segment.code.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS gl_code STRING OPTIONS(description="General ledger or guest ledger code associated with the segment, when available.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS is_active BOOL OPTIONS(description="Active flag.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS insert_date DATE OPTIONS(description="Insert date.");
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment`
+ADD COLUMN IF NOT EXISTS updated_date DATE OPTIONS(description="Updated date.");
 
 CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_segment` AS
 SELECT
