@@ -1,0 +1,98 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  tags: ["ddl", "core", "segments", "lookups", "mappings", "dimensions", "views"]
+}
+
+CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core`
+OPTIONS(location="${dataform.projectConfig.defaultLocation}");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group` (
+  code STRING OPTIONS(description="Standard segment group code."),
+  name STRING OPTIONS(description="Segment group display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the segment group."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for high-level commercial segment groups.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment` (
+  code STRING OPTIONS(description="Standard commercial segment code."),
+  name STRING OPTIONS(description="Segment display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the segment."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  segment_group_code STRING OPTIONS(description="Standard segment group code. Joins to lkp_segment_group.code."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for standard commercial segments.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_finance_segment` (
+  code STRING OPTIONS(description="Standard finance segment code."),
+  name STRING OPTIONS(description="Finance segment display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the finance segment."),
+  sort INT64 OPTIONS(description="Display order for finance reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for finance reporting segments.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment` (
+  property_code STRING OPTIONS(description="Property code."),
+  system STRING OPTIONS(description="Source system providing the segment value."),
+  code STRING OPTIONS(description="Source-system segment code."),
+  name STRING OPTIONS(description="Source-system segment name or label."),
+  description STRING OPTIONS(description="Source-system segment description, if supplied."),
+  segment_code STRING OPTIONS(description="Standard commercial segment code. Joins to lkp_segment.code."),
+  finance_segment_code STRING OPTIONS(description="Standard finance segment code. Joins to lkp_finance_segment.code."),
+  gl_code STRING OPTIONS(description="General ledger or guest ledger code associated with the mapped segment, when available."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Maps source-system segment values to standardized commercial and finance segment values.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment` (
+  property_code STRING OPTIONS(description="Property code."),
+  map_segment_code STRING OPTIONS(description="Source segment code from map_segment.code. Used to resolve incoming source data."),
+  segment_code STRING OPTIONS(description="Standard commercial segment code. Joins to lkp_segment.code."),
+  segment_group_code STRING OPTIONS(description="Standard segment group code. Usually inherited from lkp_segment.segment_group_code."),
+  finance_segment_code STRING OPTIONS(description="Standard finance segment code. Joins to lkp_finance_segment.code."),
+  gl_code STRING OPTIONS(description="General ledger or guest ledger code associated with the segment, when available."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Production segment reference used by ingestion, facts, snapshots, and reporting.");
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_segment` AS
+SELECT
+  ds.property_code,
+  ds.map_segment_code,
+  ds.segment_code,
+  s.name AS segment,
+  s.description AS segment_description,
+  s.sort AS segment_sort,
+  ds.segment_group_code,
+  sg.name AS segment_group,
+  sg.description AS segment_group_description,
+  sg.sort AS segment_group_sort,
+  ds.finance_segment_code,
+  fs.name AS finance_segment,
+  fs.description AS finance_segment_description,
+  fs.sort AS finance_segment_sort,
+  ds.gl_code,
+  ds.is_active,
+  ds.insert_date,
+  ds.updated_date
+FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment` ds
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment` s
+  ON ds.segment_code = s.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group` sg
+  ON ds.segment_group_code = sg.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_finance_segment` fs
+  ON ds.finance_segment_code = fs.code;
