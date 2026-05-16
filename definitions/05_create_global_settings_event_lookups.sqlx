@@ -1,0 +1,60 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  tags: ["ddl", "lookups", "events", "metrics_core"]
+}
+
+CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core`
+OPTIONS(location="${dataform.projectConfig.defaultLocation}");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_event_category` (
+  event_category STRING OPTIONS(description="Controlled event category used to classify demand-impacting dates, citywide activity, property-level disruptions, holidays, observances, and special market conditions."),
+  insert_timestamp STRING OPTIONS(description="UTC timestamp when the lookup row was inserted or seeded. Stored as STRING to preserve compatibility with the existing source table pattern.")
+)
+OPTIONS(description="Controlled lookup table for event categories used by event calendars, demand context, pricing notes, forecast overlays, and BI filters.");
+
+MERGE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_event_category` AS target
+USING (
+  SELECT 'Convention' AS event_category, '2026-04-01T09:15:07.560Z' AS insert_timestamp UNION ALL
+  SELECT 'Holiday', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Observance', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Concert', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Sporting', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Festival', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Government', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Marathon', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Other', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Property Closure', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Renovation', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Special Event', '2026-04-01T09:15:07.560Z' UNION ALL
+  SELECT 'Natural Event', '2026-04-01T09:15:07.560Z'
+) AS source
+ON target.event_category = source.event_category
+WHEN NOT MATCHED THEN
+  INSERT (event_category, insert_timestamp)
+  VALUES (source.event_category, source.insert_timestamp);
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_event_impact` (
+  event_impact STRING OPTIONS(description="Controlled event impact classification used to indicate the expected demand, pricing, compression, or location-based impact of an event."),
+  insert_timestamp STRING OPTIONS(description="UTC timestamp when the lookup row was inserted or seeded. Stored as STRING to preserve compatibility with the existing source table pattern."),
+  event_impact_bg_color STRING OPTIONS(description="Optional background color value used for event-impact display in BI tools, dashboards, calendars, or planning interfaces."),
+  event_impact_font_color STRING OPTIONS(description="Optional font color value used with event_impact_bg_color for readable event-impact display in BI tools, dashboards, calendars, or planning interfaces.")
+)
+OPTIONS(description="Controlled lookup table for event impact levels used by event calendars, demand context, pricing notes, forecast overlays, and BI filters.");
+
+MERGE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_event_impact` AS target
+USING (
+  SELECT 'Citywide Sellout' AS event_impact, '2026-04-01T09:15:13.741Z' AS insert_timestamp, CAST(NULL AS STRING) AS event_impact_bg_color, CAST(NULL AS STRING) AS event_impact_font_color UNION ALL
+  SELECT 'Citywide Limited', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING) UNION ALL
+  SELECT 'High Impact', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING) UNION ALL
+  SELECT 'Medium Impact', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING) UNION ALL
+  SELECT 'Minimal Impact', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING) UNION ALL
+  SELECT 'Location Based Impact', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING) UNION ALL
+  SELECT 'Location Based Limited', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING) UNION ALL
+  SELECT 'No Impact', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING) UNION ALL
+  SELECT 'Note', '2026-04-01T09:15:13.741Z', CAST(NULL AS STRING), CAST(NULL AS STRING)
+) AS source
+ON target.event_impact = source.event_impact
+WHEN NOT MATCHED THEN
+  INSERT (event_impact, insert_timestamp, event_impact_bg_color, event_impact_font_color)
+  VALUES (source.event_impact, source.insert_timestamp, source.event_impact_bg_color, source.event_impact_font_color);

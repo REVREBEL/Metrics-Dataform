@@ -1,0 +1,298 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  tags: ["ddl", "core", "lookups", "mappings", "source", "channel", "rate"]
+}
+
+CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core`
+OPTIONS(location="${dataform.projectConfig.defaultLocation}");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_category` (
+  code STRING OPTIONS(description="Standard consortia category code."),
+  name STRING OPTIONS(description="Consortia category display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the consortia category."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for consortia categories.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_focus` (
+  code STRING OPTIONS(description="Standard consortia focus code."),
+  name STRING OPTIONS(description="Consortia focus display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the consortia focus."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for consortia focus areas.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia` (
+  code STRING OPTIONS(description="Standard consortia code."),
+  name STRING OPTIONS(description="Full consortia name."),
+  short_name STRING OPTIONS(description="Short consortia display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the consortia."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  consortia_focus_code STRING OPTIONS(description="Standard consortia focus code. Joins to lkp_consortia_focus.code."),
+  consortia_category_code STRING OPTIONS(description="Standard consortia category code. Joins to lkp_consortia_category.code."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled consortia reference table.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_agency` (
+  iata STRING OPTIONS(description="IATA number or agency identifier."),
+  name STRING OPTIONS(description="Agency name."),
+  corp_profile STRING OPTIONS(description="Corporate profile or agency profile reference, when supplied."),
+  corporate_code STRING OPTIONS(description="Corporate code associated with the agency, when available."),
+  consortia_code STRING OPTIONS(description="Standard consortia code. Joins to lkp_consortia.code."),
+  consortia_short_name STRING OPTIONS(description="Short consortia name for reporting or source compatibility."),
+  rate_type STRING OPTIONS(description="Rate type or negotiated rate classification associated with the agency, when supplied."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Agency and IATA reference table.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_industry` (
+  category STRING OPTIONS(description="High-level industry category."),
+  industry STRING OPTIONS(description="Industry name."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled industry category and industry lookup table.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_company` (
+  code STRING OPTIONS(description="Standard company or account code."),
+  name STRING OPTIONS(description="Company or account name."),
+  description STRING OPTIONS(description="Company description or usage notes."),
+  category STRING OPTIONS(description="Company category."),
+  industry STRING OPTIONS(description="Industry value. Can join to lkp_industry.industry when standardized."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Company, corporate account, and profile reference table.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source` (
+  code STRING OPTIONS(description="Standard source code."),
+  name STRING OPTIONS(description="Source display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the source."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  source STRING OPTIONS(description="Optional source family or legacy source label when a source needs to be grouped under a broader source value."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for standard sources.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_subsource` (
+  code STRING OPTIONS(description="Standard subsource code."),
+  name STRING OPTIONS(description="Subsource display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the subsource."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for standard subsources.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel_group` (
+  code STRING OPTIONS(description="Standard channel group code."),
+  name STRING OPTIONS(description="Channel group display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the channel group."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for channel groups.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel` (
+  code STRING OPTIONS(description="Standard channel code."),
+  name STRING OPTIONS(description="Channel display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the channel."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  channel_group_code STRING OPTIONS(description="Standard channel group code. Joins to lkp_channel_group.code."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for standard channels.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_ratetype` (
+  code STRING OPTIONS(description="Standard rate type code."),
+  name STRING OPTIONS(description="Rate type display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the rate type."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for standard rate types.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_rate` (
+  code STRING OPTIONS(description="Standard rate code."),
+  name STRING OPTIONS(description="Rate display name."),
+  description STRING OPTIONS(description="Rate description or usage notes."),
+  ratetype_code STRING OPTIONS(description="Standard rate type code. Joins to lkp_ratetype.code."),
+  company_code STRING OPTIONS(description="Standard company code, when associated with a company. Joins to lkp_company.code."),
+  segment_code STRING OPTIONS(description="Standard segment code. Joins to lkp_segment.code."),
+  channel_code STRING OPTIONS(description="Standard channel code. Joins to lkp_channel.code."),
+  source_code STRING OPTIONS(description="Standard source code. Joins to lkp_source.code."),
+  subsource_code STRING OPTIONS(description="Standard subsource code, when applicable. Joins to lkp_subsource.code."),
+  consortia_code STRING OPTIONS(description="Standard consortia code, when applicable. Joins to lkp_consortia.code."),
+  sort INT64 OPTIONS(description="Display order for reporting."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for standard rates and related commercial attributes.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_source` (
+  property_code STRING OPTIONS(description="Property code."),
+  system STRING OPTIONS(description="Source system providing the source or subsource value."),
+  code STRING OPTIONS(description="Source-system source or subsource code."),
+  name STRING OPTIONS(description="Source-system source or subsource name."),
+  description STRING OPTIONS(description="Source-system source or subsource description, if supplied."),
+  code_reference STRING OPTIONS(description="Identifies whether code maps to source_code or subsource_code. Allowed values: source_code, subsource_code."),
+  source_code STRING OPTIONS(description="Standard source code. Joins to lkp_source.code."),
+  subsource_code STRING OPTIONS(description="Standard subsource code. Joins to lkp_subsource.code. If no true subsource exists, downstream facts may set subsource_code equal to source_code."),
+  channel_code STRING OPTIONS(description="Standard channel code. Joins to lkp_channel.code."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Maps source-system source and subsource values to standardized source, subsource, and channel values.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_rate` (
+  property_code STRING OPTIONS(description="Property code."),
+  system STRING OPTIONS(description="Source system providing the rate value."),
+  code STRING OPTIONS(description="Source-system rate code."),
+  name STRING OPTIONS(description="Source-system rate name."),
+  description STRING OPTIONS(description="Source-system rate description, if supplied."),
+  ratetype_code STRING OPTIONS(description="Standard rate type code. Joins to lkp_ratetype.code."),
+  company_code STRING OPTIONS(description="Standard company code. Joins to lkp_company.code."),
+  segment_code STRING OPTIONS(description="Standard segment code. Joins to lkp_segment.code."),
+  channel_code STRING OPTIONS(description="Standard channel code. Joins to lkp_channel.code."),
+  source_code STRING OPTIONS(description="Standard source code. Joins to lkp_source.code."),
+  subsource_code STRING OPTIONS(description="Standard subsource code, when applicable. Joins to lkp_subsource.code."),
+  consortia_code STRING OPTIONS(description="Standard consortia code, when applicable. Joins to lkp_consortia.code."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Maps source-system rate codes to standardized rate, rate type, company, segment, channel, source, subsource, and consortia values.");
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_source` AS
+SELECT
+  ms.property_code,
+  ms.system,
+  ms.code AS map_source_code,
+  ms.name AS map_source_name,
+  ms.description AS map_source_description,
+  ms.code_reference,
+  ms.source_code,
+  src.name AS source,
+  src.description AS source_description,
+  src.sort AS source_sort,
+  ms.subsource_code,
+  sub.name AS subsource,
+  sub.description AS subsource_description,
+  sub.sort AS subsource_sort,
+  ms.channel_code,
+  ch.name AS channel,
+  ch.description AS channel_description,
+  ch.sort AS channel_sort,
+  ch.channel_group_code,
+  cg.name AS channel_group,
+  cg.description AS channel_group_description,
+  cg.sort AS channel_group_sort,
+  ms.is_active,
+  ms.insert_date,
+  ms.updated_date
+FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.map_source` ms
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source` src
+  ON ms.source_code = src.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_subsource` sub
+  ON ms.subsource_code = sub.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel` ch
+  ON ms.channel_code = ch.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel_group` cg
+  ON ch.channel_group_code = cg.code;
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_rate` AS
+SELECT
+  mr.property_code,
+  mr.system,
+  mr.code AS map_rate_code,
+  mr.name AS map_rate_name,
+  mr.description AS map_rate_description,
+  mr.ratetype_code,
+  rt.name AS ratetype,
+  rt.description AS ratetype_description,
+  rt.sort AS ratetype_sort,
+  mr.company_code,
+  co.name AS company,
+  co.description AS company_description,
+  co.category AS company_category,
+  co.industry,
+  co.sort AS company_sort,
+  mr.segment_code,
+  seg.name AS segment,
+  seg.description AS segment_description,
+  seg.sort AS segment_sort,
+  mr.channel_code,
+  ch.name AS channel,
+  ch.description AS channel_description,
+  ch.sort AS channel_sort,
+  ch.channel_group_code,
+  cg.name AS channel_group,
+  cg.sort AS channel_group_sort,
+  mr.source_code,
+  src.name AS source,
+  src.description AS source_description,
+  src.sort AS source_sort,
+  mr.subsource_code,
+  sub.name AS subsource,
+  sub.description AS subsource_description,
+  sub.sort AS subsource_sort,
+  mr.consortia_code,
+  con.name AS consortia,
+  con.short_name AS consortia_short_name,
+  con.description AS consortia_description,
+  con.sort AS consortia_sort,
+  con.consortia_focus_code,
+  cf.name AS consortia_focus,
+  con.consortia_category_code,
+  cc.name AS consortia_category,
+  mr.is_active,
+  mr.insert_date,
+  mr.updated_date
+FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.map_rate` mr
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_ratetype` rt
+  ON mr.ratetype_code = rt.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_company` co
+  ON mr.company_code = co.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment` seg
+  ON mr.segment_code = seg.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel` ch
+  ON mr.channel_code = ch.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel_group` cg
+  ON ch.channel_group_code = cg.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source` src
+  ON mr.source_code = src.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_subsource` sub
+  ON mr.subsource_code = sub.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia` con
+  ON mr.consortia_code = con.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_focus` cf
+  ON con.consortia_focus_code = cf.code
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_category` cc
+  ON con.consortia_category_code = cc.code;
