@@ -43,10 +43,10 @@ OPTIONS(description="Controlled lookup table for finance reporting segments.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment` (
   property_code STRING OPTIONS(description="Property code."),
-  system STRING OPTIONS(description="Source system providing the segment value."),
-  code STRING OPTIONS(description="Source-system segment code."),
-  name STRING OPTIONS(description="Source-system segment name or label."),
-  description STRING OPTIONS(description="Source-system segment description, if supplied."),
+  system STRING OPTIONS(description="Granular source application code providing the segment value. Joins to lkp_source_application.code."),
+  code STRING OPTIONS(description="Source-application segment code."),
+  name STRING OPTIONS(description="Source-application segment name or label."),
+  description STRING OPTIONS(description="Source-application segment description, if supplied."),
   segment_code STRING OPTIONS(description="Standard commercial segment code. Joins to lkp_segment.code."),
   finance_segment_code STRING OPTIONS(description="Standard finance segment code. Joins to lkp_finance_segment.code."),
   gl_code STRING OPTIONS(description="General ledger or guest ledger code associated with the mapped segment, when available."),
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   insert_date DATE OPTIONS(description="Insert date."),
   updated_date DATE OPTIONS(description="Updated date.")
 )
-OPTIONS(description="Maps source-system segment values to standardized commercial and finance segment values.");
+OPTIONS(description="Maps source-application segment values to standardized commercial and finance segment values.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment` (
   property_code STRING OPTIONS(description="Property code."),
