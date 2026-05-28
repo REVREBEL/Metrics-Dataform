@@ -157,10 +157,10 @@ OPTIONS(description="Controlled lookup table for standard rates and related comm
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_source` (
   property_code STRING OPTIONS(description="Property code."),
-  system STRING OPTIONS(description="Source system providing the source or subsource value."),
-  code STRING OPTIONS(description="Source-system source or subsource code."),
-  name STRING OPTIONS(description="Source-system source or subsource name."),
-  description STRING OPTIONS(description="Source-system source or subsource description, if supplied."),
+  source_application_code STRING OPTIONS(description="Granular source application code providing the source or subsource value. Joins to lkp_source_application.code."),
+  code STRING OPTIONS(description="Source-application source or subsource code."),
+  name STRING OPTIONS(description="Source-application source or subsource name."),
+  description STRING OPTIONS(description="Source-application source or subsource description, if supplied."),
   code_reference STRING OPTIONS(description="Identifies whether code maps to source_code or subsource_code. Allowed values: source_code, subsource_code."),
   source_code STRING OPTIONS(description="Standard source code. Joins to lkp_source.code."),
   subsource_code STRING OPTIONS(description="Standard subsource code. Joins to lkp_subsource.code. If no true subsource exists, downstream facts may set subsource_code equal to source_code."),
@@ -169,14 +169,14 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   insert_date DATE OPTIONS(description="Insert date."),
   updated_date DATE OPTIONS(description="Updated date.")
 )
-OPTIONS(description="Maps source-system source and subsource values to standardized source, subsource, and channel values.");
+OPTIONS(description="Maps source-application source and subsource values to standardized source, subsource, and channel values.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_rate` (
   property_code STRING OPTIONS(description="Property code."),
-  system STRING OPTIONS(description="Source system providing the rate value."),
-  code STRING OPTIONS(description="Source-system rate code."),
-  name STRING OPTIONS(description="Source-system rate name."),
-  description STRING OPTIONS(description="Source-system rate description, if supplied."),
+  source_application_code STRING OPTIONS(description="Granular source application code providing the rate value. Joins to lkp_source_application.code."),
+  code STRING OPTIONS(description="Source-application rate code."),
+  name STRING OPTIONS(description="Source-application rate name."),
+  description STRING OPTIONS(description="Source-application rate description, if supplied."),
   ratetype_code STRING OPTIONS(description="Standard rate type code. Joins to lkp_ratetype.code."),
   company_code STRING OPTIONS(description="Standard company code. Joins to lkp_company.code."),
   segment_code STRING OPTIONS(description="Standard segment code. Joins to lkp_segment.code."),
@@ -188,12 +188,12 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   insert_date DATE OPTIONS(description="Insert date."),
   updated_date DATE OPTIONS(description="Updated date.")
 )
-OPTIONS(description="Maps source-system rate codes to standardized rate, rate type, company, segment, channel, source, subsource, and consortia values.");
+OPTIONS(description="Maps source-application rate codes to standardized rate, rate type, company, segment, channel, source, subsource, and consortia values.");
 
 CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_source` AS
 SELECT
   ms.property_code,
-  ms.system,
+  ms.source_application_code,
   ms.code AS map_source_code,
   ms.name AS map_source_name,
   ms.description AS map_source_description,
@@ -230,7 +230,7 @@ LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel_gr
 CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_rate` AS
 SELECT
   mr.property_code,
-  mr.system,
+  mr.source_application_code,
   mr.code AS map_rate_code,
   mr.name AS map_rate_name,
   mr.description AS map_rate_description,
