@@ -1,0 +1,52 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  tags: ["ddl", "core", "lookups", "source", "applications"]
+}
+
+CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core`
+OPTIONS(location="${dataform.projectConfig.defaultLocation}");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_system_type` (
+  code STRING OPTIONS(description="Standard broad source-system type code such as PMS, CRS, RMS, RateShop, Marketing, Finance, Sales, Web, or Manual."),
+  name STRING OPTIONS(description="Source-system type display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the broad source-system type."),
+  sort INT64 OPTIONS(description="Display order for reporting and UI picklists."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for broad source-system/application categories.");
+
+CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_application` (
+  code STRING OPTIONS(description="Standard granular source application code. This is the controlled value used by mapping-table source-system fields."),
+  name STRING OPTIONS(description="Source application display name."),
+  short_name STRING OPTIONS(description="Short source application display name."),
+  description STRING OPTIONS(description="Definition or usage notes for the source application."),
+  sort INT64 OPTIONS(description="Display order for reporting and UI picklists."),
+  source_system_type_code STRING OPTIONS(description="Broad source-system type code. Joins to lkp_source_system_type.code."),
+  vendor STRING OPTIONS(description="Application vendor or provider, when applicable."),
+  is_active BOOL OPTIONS(description="Active flag."),
+  insert_date DATE OPTIONS(description="Insert date."),
+  updated_date DATE OPTIONS(description="Updated date.")
+)
+OPTIONS(description="Controlled lookup table for granular source applications such as OPERA, IDeaS, SynXis, Lighthouse, or manual uploads.");
+
+CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_source_application` AS
+SELECT
+  app.code AS source_application_code,
+  app.name AS source_application,
+  app.short_name AS source_application_short_name,
+  app.description AS source_application_description,
+  app.sort AS source_application_sort,
+  app.vendor,
+  app.source_system_type_code,
+  typ.name AS source_system_type,
+  typ.description AS source_system_type_description,
+  typ.sort AS source_system_type_sort,
+  app.is_active,
+  app.insert_date,
+  app.updated_date
+FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_application` app
+LEFT JOIN `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_system_type` typ
+  ON app.source_system_type_code = typ.code;
