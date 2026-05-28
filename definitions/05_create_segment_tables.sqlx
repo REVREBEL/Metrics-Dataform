@@ -43,7 +43,7 @@ OPTIONS(description="Controlled lookup table for finance reporting segments.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment` (
   property_code STRING OPTIONS(description="Property code."),
-  system STRING OPTIONS(description="Granular source application code providing the segment value. Joins to lkp_source_application.code."),
+  source_application_code STRING OPTIONS(description="Granular source application code providing the segment value. Joins to lkp_source_application.code."),
   code STRING OPTIONS(description="Source-application segment code."),
   name STRING OPTIONS(description="Source-application segment name or label."),
   description STRING OPTIONS(description="Source-application segment description, if supplied."),
