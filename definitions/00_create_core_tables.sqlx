@@ -7,103 +7,9 @@ config {
 CREATE SCHEMA IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core`
 OPTIONS(location="${dataform.projectConfig.defaultLocation}");
 
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_property` (
-  property_code STRING OPTIONS(description="Primary property code."),
-  property_name STRING OPTIONS(description="Standard property name."),
-  property_shortname STRING OPTIONS(description="Short property name used for BI display."),
-  property_status STRING OPTIONS(description="Property status such as Active, Inactive, Onboarding, or Archived."),
-  rating STRING OPTIONS(description="Property rating or star rating."),
-  brand STRING OPTIONS(description="Brand or collection."),
-  market STRING OPTIONS(description="Primary market."),
-  city STRING OPTIONS(description="City."),
-  state STRING OPTIONS(description="State or province."),
-  country STRING OPTIONS(description="Country."),
-  timezone STRING OPTIONS(description="IANA timezone."),
-  str_id STRING OPTIONS(description="Standard STR / CoStar identifier."),
-  crs_id STRING OPTIONS(description="CRS identifier."),
-  pms_id STRING OPTIONS(description="PMS identifier."),
-  rms_id STRING OPTIONS(description="RMS identifier."),
-  rateshop_id STRING OPTIONS(description="Rate shop identifier."),
-  available_rms INT64 OPTIONS(description="Default room inventory, if stable."),
-  open_date DATE OPTIONS(description="Property open date."),
-  close_date DATE OPTIONS(description="Property close date, if applicable."),
-  source_system STRING OPTIONS(description="Source system for the property reference record."),
-  source_file STRING OPTIONS(description="Source file name or path, if imported."),
-  insert_date DATE OPTIONS(description="Insert date."),
-  updated_date DATE OPTIONS(description="Updated date.")
-)
-OPTIONS(description="Standard property/hotel reference table.");
-
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_date` (
-  stay_date DATE OPTIONS(description="Hotel stay, occupancy, or service date."),
-  date_key INT64 OPTIONS(description="YYYYMMDD date key."),
-  year INT64 OPTIONS(description="Calendar year."),
-  quarter INT64 OPTIONS(description="Calendar quarter."),
-  month INT64 OPTIONS(description="Calendar month number."),
-  month_name STRING OPTIONS(description="Month name."),
-  month_start_date DATE OPTIONS(description="First date of the month."),
-  week INT64 OPTIONS(description="Week number."),
-  day_of_week STRING OPTIONS(description="Day of week name."),
-  day_of_week_no INT64 OPTIONS(description="Day of week number."),
-  is_weekend BOOL OPTIONS(description="Weekend flag.")
-)
-OPTIONS(description="Calendar/date dimension using stay_date as the hotel service-date grain.");
-
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_segment` (
-  segment STRING OPTIONS(description="Standard segment name."),
-  segment_code STRING OPTIONS(description="Standard segment code."),
-  segment_group STRING OPTIONS(description="Standard segment group name."),
-  segment_group_code STRING OPTIONS(description="Standard segment group code."),
-  finance_segment STRING OPTIONS(description="Finance segment name."),
-  finance_segment_code STRING OPTIONS(description="Finance segment code."),
-  gl_code STRING OPTIONS(description="General ledger or guest ledger code."),
-  segment_category STRING OPTIONS(description="Segment category such as Group, Transient, Contract, or Complimentary."),
-  rate_basis STRING OPTIONS(description="Rate basis such as full rate reported, net, mixed, or discount."),
-  segment_sort INT64 OPTIONS(description="BI sort order."),
-  is_active BOOL OPTIONS(description="Active flag."),
-  insert_date DATE OPTIONS(description="Insert date."),
-  updated_date DATE OPTIONS(description="Updated date.")
-)
-OPTIONS(description="Standard segment reference table.");
-
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_roomtype` (
-  property_code STRING OPTIONS(description="Property code."),
-  roomtype STRING OPTIONS(description="Standard roomtype name."),
-  roomtype_code STRING OPTIONS(description="Standard roomtype code."),
-  roomclass STRING OPTIONS(description="Standard room class. A grouping of like room types that can be interchanged and have similar features or characteristics."),
-  roomclass_code STRING OPTIONS(description="Standard room class code."),
-  bedtype STRING OPTIONS(description="Standard bed type."),
-  bedtype_code STRING OPTIONS(description="Standard bed type code."),
-  roomfeature STRING OPTIONS(description="Primary room feature such as size, view, floor, or amenity."),
-  roompool STRING OPTIONS(description="Optional standard room pool, only when separately defined by the source system."),
-  roompool_code STRING OPTIONS(description="Optional standard room pool code."),
-  related_roomtypes STRING OPTIONS(description="Descriptive list of related roomtypes included in the room class or room pool."),
-  available_rms INT64 OPTIONS(description="Default room inventory for the roomtype, if stable."),
-  roomtype_sort INT64 OPTIONS(description="BI sort order."),
-  is_active BOOL OPTIONS(description="Active flag."),
-  insert_date DATE OPTIONS(description="Insert date."),
-  updated_date DATE OPTIONS(description="Updated date.")
-)
-OPTIONS(description="Standard room type and room class reference table.");
-
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_metric` (
-  metric_code STRING OPTIONS(description="Standard metric code."),
-  metric_name STRING OPTIONS(description="Display name."),
-  metric_category STRING OPTIONS(description="Metric category such as Revenue, Rooms, Rate, Occupancy, Demand, or Pickup."),
-  metric_type STRING OPTIONS(description="Metric type such as Count, Currency, Percent, Ratio, or Text."),
-  is_additive BOOL OPTIONS(description="Whether the metric can be summed."),
-  calc_method STRING OPTIONS(description="Source, derived, mapped, or manual."),
-  formula STRING OPTIONS(description="Formula for derived metrics."),
-  display_format STRING OPTIONS(description="BI display format."),
-  description STRING OPTIONS(description="Metric definition."),
-  insert_date DATE OPTIONS(description="Insert date."),
-  updated_date DATE OPTIONS(description="Updated date.")
-)
-OPTIONS(description="Metric dictionary and calculation rules.");
-
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.dim_source_report` (
   source_report_id STRING OPTIONS(description="Unique source report identifier."),
-  source_system STRING OPTIONS(description="PMS, RMS, CRS, booking engine, manual, or other source system."),
+  source_application_code STRING OPTIONS(description="Granular source application code. Joins to lkp_source_application.code."),
   source_report STRING OPTIONS(description="Source report name."),
   source_file STRING OPTIONS(description="Source file name or path."),
   property_code STRING OPTIONS(description="Property code, if report is property-specific."),
@@ -112,11 +18,11 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   extract_date DATE OPTIONS(description="Date extracted."),
   insert_date DATE OPTIONS(description="Insert date.")
 )
-OPTIONS(description="Metadata for imported files, reports, and source systems.");
+OPTIONS(description="Metadata for imported files, reports, and source applications.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment` (
   property_code STRING OPTIONS(description="Property code."),
-  source_system STRING OPTIONS(description="Source system."),
+  source_application_code STRING OPTIONS(description="Granular source application code. Joins to lkp_source_application.code."),
   segment_map STRING OPTIONS(description="Source segment value."),
   segment_code_map STRING OPTIONS(description="Source segment code."),
   segment STRING OPTIONS(description="Standard segment."),
@@ -132,23 +38,23 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   insert_date DATE OPTIONS(description="Insert date."),
   updated_date DATE OPTIONS(description="Updated date.")
 )
-OPTIONS(description="Maps source segment names and codes to standardized segment values.");
+OPTIONS(description="Legacy segment mapping definition retained for compatibility. Newer segment DDL also defines map_segment with source_application_code.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.map_roomtype` (
   property_code STRING OPTIONS(description="Property code."),
-  source_system STRING OPTIONS(description="Source system."),
+  source_application_code STRING OPTIONS(description="Granular source application code. Joins to lkp_source_application.code."),
   roomtype_map STRING OPTIONS(description="Source roomtype value."),
   roomtype_code_map STRING OPTIONS(description="Source roomtype code."),
   roomtype STRING OPTIONS(description="Standard roomtype."),
   roomtype_code STRING OPTIONS(description="Standard roomtype code."),
-  roomclass STRING OPTIONS(description="Standard room class. A grouping of like room types that can be interchanged and have similar features or characteristics."),
+  roomclass STRING OPTIONS(description="Standard room class."),
   roomclass_code STRING OPTIONS(description="Standard room class code."),
   roomclass_map STRING OPTIONS(description="Source room class value."),
   roomclass_code_map STRING OPTIONS(description="Source room class code."),
   bedtype STRING OPTIONS(description="Standard bed type."),
   bedtype_code STRING OPTIONS(description="Standard bed type code."),
   roomfeature STRING OPTIONS(description="Primary room feature."),
-  roompool STRING OPTIONS(description="Optional standard room pool, only when separately defined by the source system."),
+  roompool STRING OPTIONS(description="Optional standard room pool, only when separately defined by the source application."),
   roompool_code STRING OPTIONS(description="Optional standard room pool code."),
   roompool_map STRING OPTIONS(description="Source room pool value."),
   roompool_code_map STRING OPTIONS(description="Source room pool code."),
@@ -158,17 +64,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   insert_date DATE OPTIONS(description="Insert date."),
   updated_date DATE OPTIONS(description="Updated date.")
 )
-OPTIONS(description="Maps source roomtype names and codes to standardized roomtype, roomclass, bedtype, and optional roompool values.");
-
-CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_system` (
-  source_system STRING OPTIONS(description="Allowed source system name."),
-  source_system_category STRING OPTIONS(description="Source system category such as PMS, RMS, CRS, Demand, Pricing, Web, Finance, Sales, or Manual."),
-  is_active BOOL OPTIONS(description="Active flag."),
-  description STRING OPTIONS(description="Source system description."),
-  insert_date DATE OPTIONS(description="Insert date."),
-  updated_date DATE OPTIONS(description="Updated date.")
-)
-OPTIONS(description="Controlled lookup list for source systems.");
+OPTIONS(description="Legacy roomtype mapping definition retained for compatibility with standardized source_application_code naming.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_report_type` (
   report_type STRING OPTIONS(description="Allowed report type."),
