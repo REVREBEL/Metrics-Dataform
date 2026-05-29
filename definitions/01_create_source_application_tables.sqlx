@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   insert_date DATE OPTIONS(description="Insert date."),
   updated_date DATE OPTIONS(description="Updated date.")
 )
-OPTIONS(description="Controlled lookup table for broad source-system/application categories.");
+OPTIONS(description="Controlled lookup table for broad source-system/application types.");
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_application` (
-  code STRING OPTIONS(description="Standard granular source application code. This is the controlled value used by mapping-table source-system fields."),
+  code STRING OPTIONS(description="Standard granular source application code."),
   name STRING OPTIONS(description="Source application display name."),
   short_name STRING OPTIONS(description="Short source application display name."),
   description STRING OPTIONS(description="Definition or usage notes for the source application."),
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_co
   insert_date DATE OPTIONS(description="Insert date."),
   updated_date DATE OPTIONS(description="Updated date.")
 )
-OPTIONS(description="Controlled lookup table for granular source applications such as OPERA, IDeaS, SynXis, Lighthouse, or manual uploads.");
+OPTIONS(description="Controlled lookup table for granular source applications such as OPERA, IDeaS, SynXis, Lighthouse, or manual uploads. Mapping tables should store the foreign key as source_application_code.");
 
 CREATE OR REPLACE VIEW `${dataform.projectConfig.defaultDatabase}.metrics_core.vw_source_application` AS
 SELECT
