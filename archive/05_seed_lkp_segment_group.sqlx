@@ -1,0 +1,54 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["05_create_segment_tables"],
+  tags: ["seed", "core", "lookups"]
+}
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group` (
+  code, name, description, sort, is_active, insert_date, updated_date
+)
+WITH seed_rows AS (
+  SELECT SPLIT(row_value, "|") AS parts
+  FROM UNNEST([
+    'TRE|Transient Retail|Transient Retail|1|true||',
+    'TNG|Transient Negotiated|Transient Negotiated|2|true||',
+    'TQD|Transient Qualified|Transient Qualified|3|true||',
+    'TUQ|Transient Discount|Transient Discount|4|true||',
+    'TWH|Transient Wholesale|Transient Wholesale|5|true||',
+    'TUQ|Transient Discount|Transient Discount|6|true||',
+    'GGA|Group Association|Group Association|7|true||',
+    'GGC|Group Corporate|Group Corporate|8|true||',
+    'GGS|Group SMERF|Group SMERF|9|true||',
+    'GGT|Group Tour|Group Tour|10|true||',
+    'GGG|Group Government|Group Government|11|true||',
+    'GGS|Group SMERF|Group SMERF|12|true||',
+    'CCT|Contract|Contract|13|true||',
+    'CCO|Complimentary|Complimentary|14|true||',
+    'RNS|Other Room Revenue|Other Room Revenue|15|true||'
+  ]) AS row_value
+),
+s AS (
+  SELECT
+    NULLIF(parts[SAFE_OFFSET(0)], '') AS code,
+    NULLIF(parts[SAFE_OFFSET(1)], '') AS name,
+    NULLIF(parts[SAFE_OFFSET(2)], '') AS description,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(3)], '') AS INT64) AS sort,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(4)], '') AS BOOL) AS is_active,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(5)], '') AS DATE) AS insert_date,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(6)], '') AS DATE) AS updated_date
+  FROM seed_rows
+)
+SELECT code, name, description, sort, is_active, insert_date, updated_date
+FROM s
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group` AS t
+  WHERE t.code IS NOT DISTINCT FROM s.code
+    AND t.name IS NOT DISTINCT FROM s.name
+    AND t.description IS NOT DISTINCT FROM s.description
+    AND t.sort IS NOT DISTINCT FROM s.sort
+    AND t.is_active IS NOT DISTINCT FROM s.is_active
+    AND t.insert_date IS NOT DISTINCT FROM s.insert_date
+    AND t.updated_date IS NOT DISTINCT FROM s.updated_date
+);

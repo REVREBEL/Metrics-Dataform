@@ -1,0 +1,85 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["05_create_segment_tables"],
+  tags: ["seed", "core", "segments", "lookups"]
+}
+
+-- Canonical Metrics segment lookup values.
+-- Source: REVREBEL Global Metrics Settings CSV exports.
+-- TRUNCATE + INSERT keeps reruns idempotent while preserving the supplied rows verbatim.
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group` (
+  code, name, description, sort, is_active, insert_date, updated_date
+)
+VALUES
+  ('TRE', 'Transient Retail', 'Transient Retail', 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TNG', 'Transient Negotiated', 'Transient Negotiated', 2, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TQD', 'Transient Qualified', 'Transient Qualified', 3, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TUQ', 'Transient Discount', 'Transient Discount', 4, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TWH', 'Transient Wholesale', 'Transient Wholesale', 5, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TUQ', 'Transient Discount', 'Transient Discount', 6, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGA', 'Group Association', 'Group Association', 7, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGC', 'Group Corporate', 'Group Corporate', 8, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGS', 'Group SMERF', 'Group SMERF', 9, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGT', 'Group Tour', 'Group Tour', 10, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGG', 'Group Government', 'Group Government', 11, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGS', 'Group SMERF', 'Group SMERF', 12, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CCT', 'Contract', 'Contract', 13, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CCO', 'Complimentary', 'Complimentary', 14, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RNS', 'Other Room Revenue', 'Other Room Revenue', 15, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment` (
+  code, name, description, sort, segment_group_code, is_active, insert_date, updated_date
+)
+VALUES
+  ('RE', 'Transient Retail', 'Transient Retail', 11, 'TRE', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CN', 'Transient Consortia', 'Transient Consortia', 12, 'TNG', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('NG', 'Transient Negotiated', 'Transient Negotiated', 13, 'TNG', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('QD', 'Transient Qualified', 'Transient Qualified', 15, 'TQD', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GV', 'Transient Government', 'Transient Government', 16, 'TQD', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('UQ', 'Transient Unqualified', 'Transient Unqualified', 17, 'TUQ', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PR', 'Transient Promotion', 'Transient Promotion', 17, 'TQD', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PK', 'Transient Package', 'Transient Package', 18, 'TQD', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WH', 'Transient Wholesale', 'Transient Wholesale', 19, 'TWH', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('OP', 'Transient Opaque', 'Transient Opaque', 20, 'TUQ', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GA', 'Group Association', 'Group Association', 31, 'GGA', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CY', 'Group Citywide', 'Group Citywide', 32, 'GGA', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GY', 'Group Citywide', 'Group Citywide', 32, 'GGA', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GC', 'Group Corporate', 'Group Corporate', 33, 'GGC', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GI', 'Group Incentive', 'Group Incentive', 34, 'GGS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GT', 'Group Tour', 'Group Tour', 36, 'GGT', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GG', 'Group Government', 'Group Government', 37, 'GGG', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GS', 'Group SMERF', 'Group SMERF', 46, 'GGS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GO', 'Group Social', 'Group Social', 47, 'GGS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GE', 'Group Entertainment', 'Group Entertainment', 48, 'GGS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GW', 'Group Wedding', 'Group Wedding', 49, 'GGS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CT', 'Contract', 'Contract', 50, 'CCT', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CO', 'Complimentary', 'Complimentary', 60, 'CCO', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HS', 'House', 'House', 70, 'CCO', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('NS', 'No Show', 'No Show', 80, 'RNS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_finance_segment`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_finance_segment` (
+  code, name, description, sort, is_active, insert_date, updated_date
+)
+VALUES
+  ('TRE', 'Transient Retail', 'Transient Retail', 11, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TNG', 'Transient Negotiated', 'Transient Negotiated', 12, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TQD', 'Transient Qualified', 'Transient Qualified', 15, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TUQ', 'Transient Discount', 'Transient Discount', 17, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TWH', 'Transient Wholesale', 'Transient Wholesale', 19, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TUQ', 'Transient Discount', 'Transient Discount', 20, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGA', 'Group Association', 'Group Association', 31, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGC', 'Group Corporate', 'Group Corporate', 33, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGS', 'Group SMERF', 'Group SMERF', 34, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGT', 'Group Tour', 'Group Tour', 36, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GGG', 'Group Government', 'Group Government', 37, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CCT', 'Contract', 'Contract', 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CCO', 'Complimentary', 'Complimentary', 60, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RNS', 'Other Room Revenue', 'Other Room Revenue', 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));

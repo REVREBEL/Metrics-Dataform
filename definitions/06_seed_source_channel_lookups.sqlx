@@ -1,0 +1,290 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["06_create_source_channel_rate_tables"],
+  tags: ["seed", "core", "source", "channel", "consortia", "lookups"]
+}
+
+-- Canonical Metrics source, channel, and consortia lookup values.
+-- Source: REVREBEL Global Metrics Settings CSV exports.
+-- TRUNCATE + INSERT keeps reruns idempotent while preserving the supplied rows verbatim.
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_category`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_category` (
+  code, name, description, sort, is_active, insert_date, updated_date
+)
+VALUES
+  ('CRW', 'AIrline Crew', 'AIrline Crew', 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('COR', 'Corporate Travel', 'Corporate Travel', 2, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MID', 'Mid Market', 'Mid Market', 3, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('LUX', 'Luxury', 'Luxury', 4, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('ENT', 'Entertainment', 'Entertainment', 5, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_focus`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia_focus` (
+  code, name, description, sort, is_active, insert_date, updated_date
+)
+VALUES
+  ('COR', 'Corporate', 'Corporate', 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('LEIS', 'Leisure', 'Leisure', 2, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GOV', 'Government', 'Government', 3, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AIR', 'Airline', 'Airline', 4, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_consortia` (
+  code, name, short_name, description, sort, consortia_focus_code, consortia_category_code, is_active, insert_date, updated_date
+)
+VALUES
+  ('AB', 'ABC Global Services', 'ABC', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AD', 'Adelman Travel', 'Adelman', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AI', 'Altour International', 'Altour', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Entertainment', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AX', 'American Express', 'American', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AH', 'Andrew Harper', 'Andrew', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VO', 'Advantage Virtuoso', 'Advantage', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('BC', 'BCD Travel', 'BCD', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CO', 'Capital One Lifestyle Collection', 'Capitol One', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CW', 'Carlson Wagonlit', 'Carlson', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CC', 'CCRA', 'CCRA', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RA', 'CTM / Radius Global Travel', 'CTM', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CM', 'CTM Luxury Lifestyle', 'CTM', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CW', 'CWT Hotel Programme', 'CWT', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DE', 'DERHotel', 'DERHotel', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DR', 'Direct Travel', 'Direct', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DG', 'Direct Global Hotel Program', 'Direct', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('EG', 'ehotel', 'ehotel', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('EG', 'EHotel AG', 'EHotel', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('EN', 'Ensemble', 'Ensemble', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FC', 'FCTG Global Program (Flight Center)', 'FCTG', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FH', 'Fine Hotels & Resorts', 'Fine Hotels', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FC', 'Flight Centre Global Program', 'Flight', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FR', 'Fedrooms', 'Fedrooms', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GL', 'GlobalStar / Winn', 'Winn', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GS', 'GSM Travel Management', 'GSM', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GT', 'GTMC Hotel Programme', 'GTMC', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CH', 'Hickory Global Partners', 'Hickory', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HR', 'HRG', 'HRG', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HS', 'HRS', 'HRS', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('IT', 'International Travel Partnership', 'ITP', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('IN', 'Internova', 'Internova', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('IT', 'ITP International Travel Partnership', 'ITP', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('JT', 'JTB', 'TP', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CM', 'Luxury & Lifestyle Collection', 'Luxury', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('ML', 'Magellan Luxury Hotels', 'Magellan', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  (CAST(NULL AS STRING), 'Navan Lodging Collection', 'Navan', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('OM', 'Omega Travel', 'Omega', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('LT', 'Ovation Lawyers Travel', 'Ovation', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('OM', 'Omega World Travel', 'Omega', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RE', 'Reed & Mackay', 'Reed', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RB', 'Road Rebel', 'Road', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CW', 'Sato', 'Sato', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Government', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SG', 'Signature Travel', 'Signature', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TH', 'THOR', 'THOR', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Corporate Travel', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TT', 'Travel & Transport', 'Travel', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Corporate Travel', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TG', 'TravelGraphics', 'TravelGraphics', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Corporate Travel', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TS', 'TravelSavers', 'TravelSavers', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Corporate Travel', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('UT', 'Ultramar Travel', 'Ultramar', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VO', 'Virtuoso', 'Virtuoso', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VP', 'Visa Premium', 'Visa', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VL', 'Visa Luxury Hotel Collection', 'Visa', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WN', 'WIN Global Travel Network', 'WIN', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RW', 'World Rainbow Travel', 'World', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WI', 'Worldwide Independent Travel Network', 'Worldwide', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WN', 'WIN Hotel Partnership', 'WIN', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Leisure', 'Luxury', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WP', 'WPP', 'WPP', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Corporate', 'Mid Market', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SF', 'SmartFlyer', 'SmartFlyer', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Airline', 'AIrline Crew', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TA', 'TA Connections', 'TA', CAST(NULL AS STRING), CAST(NULL AS INT64), 'Airline', 'AIrline Crew', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source` (
+  code, name, source, description, sort, is_active, insert_date, updated_date
+)
+VALUES
+  ('WB', 'Desktop', CAST(NULL AS STRING), CAST(NULL AS STRING), 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MB', 'Mobile', CAST(NULL AS STRING), CAST(NULL AS STRING), 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HD', 'Direct', CAST(NULL AS STRING), CAST(NULL AS STRING), 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HD', 'Travelweb', CAST(NULL AS STRING), CAST(NULL AS STRING), 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MS', 'Metasearch', CAST(NULL AS STRING), CAST(NULL AS STRING), 2, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CR', 'Central Reservations', CAST(NULL AS STRING), CAST(NULL AS STRING), 3, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RR', 'Regional Reservations', CAST(NULL AS STRING), CAST(NULL AS STRING), 3, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RL', 'Rooming List', CAST(NULL AS STRING), CAST(NULL AS STRING), 5, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PK', 'Passkey Website', CAST(NULL AS STRING), CAST(NULL AS STRING), 6, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AA', 'Sabre', CAST(NULL AS STRING), CAST(NULL AS STRING), 14, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('UA', 'Galileo', CAST(NULL AS STRING), CAST(NULL AS STRING), 15, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('1A', 'Amadeus', CAST(NULL AS STRING), CAST(NULL AS STRING), 16, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TW', 'WorldSpan', CAST(NULL AS STRING), CAST(NULL AS STRING), 17, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PG', 'Pegasus', CAST(NULL AS STRING), CAST(NULL AS STRING), 18, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PG', 'Priceline Group', CAST(NULL AS STRING), CAST(NULL AS STRING), 18, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DH', 'DHISCO', CAST(NULL AS STRING), CAST(NULL AS STRING), 19, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('EX', 'Expedia', CAST(NULL AS STRING), CAST(NULL AS STRING), 21, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HO', 'Hopper', CAST(NULL AS STRING), CAST(NULL AS STRING), 23, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HT', 'Hotel Tonight', CAST(NULL AS STRING), CAST(NULL AS STRING), 24, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TR', 'HotelTrader', CAST(NULL AS STRING), CAST(NULL AS STRING), 25, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('ON', 'One Night', CAST(NULL AS STRING), CAST(NULL AS STRING), 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RO', 'Roomlia', CAST(NULL AS STRING), CAST(NULL AS STRING), 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SE', 'Secret Escapes', CAST(NULL AS STRING), CAST(NULL AS STRING), 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TZ', 'Travelzoo', CAST(NULL AS STRING), CAST(NULL AS STRING), 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('LS', 'Living Social', CAST(NULL AS STRING), CAST(NULL AS STRING), 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MM', 'Mr & Mrs Smith', CAST(NULL AS STRING), CAST(NULL AS STRING), 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('IO', 'OTA Other', CAST(NULL AS STRING), CAST(NULL AS STRING), 60, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HS', 'HRS', CAST(NULL AS STRING), CAST(NULL AS STRING), 60, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SK', 'Ski', CAST(NULL AS STRING), CAST(NULL AS STRING), 60, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TB', 'Tablet', CAST(NULL AS STRING), CAST(NULL AS STRING), 60, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AU', 'Abreu Tours', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AL', 'ALG Vacations', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AO', 'All About Tours', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AT', 'American Tours', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('BO', 'Bonotel', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('BA', 'British Airways', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CO', 'Costco Travel', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DL', 'Delta Vacations', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DW', 'Destinations of the World', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DN', 'Dnata', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WH', 'FIT / Wholesale', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FC', 'Flight Centre', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GT', 'GTA Gullivers Travel', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HE', 'Helloworld', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HI', 'HIS', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HB', 'Hotelbeds', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HC', 'Hotels Combined', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HA', 'HotUSA', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('JB', 'JTB', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MT', 'Mark Travel', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MP', 'Meeting Point', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('NW', 'New World', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PA', 'Pacific Resorts', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RB', 'Reisebüro International', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PH', 'Pleasant Holidays', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SH', 'Sun Hotels', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TN', 'TFN Holidays', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TD', 'Time Design', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TC', 'Travalco', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TV', 'Travel Brands', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VR', 'Vacationroost', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VC', 'VacayHome', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VH', 'Virgin Holidays', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WE', 'Webbeds', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WJ', 'Westjet Vacations', CAST(NULL AS STRING), CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SY', 'Internal System Use', CAST(NULL AS STRING), CAST(NULL AS STRING), 99, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_subsource`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_subsource` (
+  code, name, description, sort, is_active, insert_date, updated_date
+)
+VALUES
+  ('WB', 'Desktop', CAST(NULL AS STRING), 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MB', 'Mobile', CAST(NULL AS STRING), 2, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('BG', 'Bing Hotel Ads', CAST(NULL AS STRING), 3, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GG', 'Google', CAST(NULL AS STRING), 4, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('KA', 'Kayak', CAST(NULL AS STRING), 5, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TA', 'Trip Connect', CAST(NULL AS STRING), 6, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TV', 'Trivago', CAST(NULL AS STRING), 7, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PK', 'Passkey Website', CAST(NULL AS STRING), 8, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CR', 'Central Reservations', CAST(NULL AS STRING), 9, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('80', '800 Number', CAST(NULL AS STRING), 10, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VO', 'Voice Outbound', CAST(NULL AS STRING), 11, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('IH', 'In-House Reservations', CAST(NULL AS STRING), 12, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RR', 'Regional Reservations', CAST(NULL AS STRING), 13, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AA', 'Sabre', CAST(NULL AS STRING), 14, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TW', 'WorldSpan', CAST(NULL AS STRING), 15, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('XF', 'Fine Hotels & Resorts', CAST(NULL AS STRING), 16, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('1A', 'Amadeus', CAST(NULL AS STRING), 17, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('UA', 'Galileo', CAST(NULL AS STRING), 18, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DH', 'DHISCO', CAST(NULL AS STRING), 19, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PG', 'Pegasus', CAST(NULL AS STRING), 20, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HD', 'Travelweb', CAST(NULL AS STRING), 21, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FD', 'Front Desk', CAST(NULL AS STRING), 22, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WI', 'Walk-In', CAST(NULL AS STRING), 23, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HP', 'House Posting', CAST(NULL AS STRING), 24, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PS', 'Passerby Room', CAST(NULL AS STRING), 25, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RL', 'Rooming List', CAST(NULL AS STRING), 26, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PL', 'Passkey Rooming List', CAST(NULL AS STRING), 27, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TR', 'PMS Transition', CAST(NULL AS STRING), 28, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('QQ', 'Unknown', CAST(NULL AS STRING), 29, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FIXME', 'Fix Me Source Code', CAST(NULL AS STRING), 30, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('ON', 'One Night', CAST(NULL AS STRING), 31, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RO', 'Roomlia', CAST(NULL AS STRING), 32, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SE', 'Secret Escapes', CAST(NULL AS STRING), 33, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TZ', 'Travelzoo', CAST(NULL AS STRING), 34, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('LS', 'Living Social', CAST(NULL AS STRING), 35, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MM', 'Mr & Mrs Smith', CAST(NULL AS STRING), 36, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('EX', 'Expedia', CAST(NULL AS STRING), 37, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('OB', 'Orbitz', CAST(NULL AS STRING), 38, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HW', 'Hotwire', CAST(NULL AS STRING), 39, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GP', 'Groupon', CAST(NULL AS STRING), 40, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('JS', 'Jetsetter', CAST(NULL AS STRING), 41, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GR', 'Getaroom', CAST(NULL AS STRING), 42, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VB', 'VRBO', CAST(NULL AS STRING), 43, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HO', 'Hopper', CAST(NULL AS STRING), 44, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HT', 'Hotel Tonight', CAST(NULL AS STRING), 45, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PR', 'Priceline', CAST(NULL AS STRING), 46, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('BK', 'Booking', CAST(NULL AS STRING), 47, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AG', 'Agoda', CAST(NULL AS STRING), 48, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CT', 'Trip', CAST(NULL AS STRING), 49, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('IO', 'OTA Other', CAST(NULL AS STRING), 50, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HS', 'HRS', CAST(NULL AS STRING), 51, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SK', 'Ski', CAST(NULL AS STRING), 52, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TB', 'Tablet', CAST(NULL AS STRING), 53, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AU', 'Abreu Tours', CAST(NULL AS STRING), 54, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AL', 'ALG Vacations', CAST(NULL AS STRING), 55, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AO', 'All About Tours', CAST(NULL AS STRING), 56, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('AT', 'American Tours', CAST(NULL AS STRING), 57, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('BO', 'Bonotel', CAST(NULL AS STRING), 58, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('BA', 'British Airways', CAST(NULL AS STRING), 59, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('CO', 'Costco Travel', CAST(NULL AS STRING), 60, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DL', 'Delta Vacations', CAST(NULL AS STRING), 61, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DW', 'Destinations of the World', CAST(NULL AS STRING), 62, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DN', 'Dnata', CAST(NULL AS STRING), 63, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WH', 'FIT / Wholesale', CAST(NULL AS STRING), 64, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('FC', 'Flight Centre', CAST(NULL AS STRING), 65, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GT', 'GTA Gullivers Travel', CAST(NULL AS STRING), 66, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HE', 'Helloworld', CAST(NULL AS STRING), 67, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HI', 'HIS', CAST(NULL AS STRING), 68, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HB', 'Hotelbeds', CAST(NULL AS STRING), 69, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HC', 'Hotels Combined', CAST(NULL AS STRING), 70, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HA', 'HotUSA', CAST(NULL AS STRING), 71, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('JB', 'JTB', CAST(NULL AS STRING), 72, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MT', 'Mark Travel', CAST(NULL AS STRING), 73, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('MP', 'Meeting Point', CAST(NULL AS STRING), 74, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('NW', 'New World', CAST(NULL AS STRING), 75, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PA', 'Pacific Resorts', CAST(NULL AS STRING), 76, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('RB', 'Reisebüro International', CAST(NULL AS STRING), 77, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PH', 'Pleasant Holidays', CAST(NULL AS STRING), 78, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SH', 'Sun Hotels', CAST(NULL AS STRING), 79, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TN', 'TFN Holidays', CAST(NULL AS STRING), 80, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TD', 'Time Design', CAST(NULL AS STRING), 81, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TC', 'Travalco', CAST(NULL AS STRING), 82, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TV', 'Travel Brands', CAST(NULL AS STRING), 83, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VR', 'Vacationroost', CAST(NULL AS STRING), 84, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VC', 'VacayHome', CAST(NULL AS STRING), 85, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VH', 'Virgin Holidays', CAST(NULL AS STRING), 86, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WE', 'Webbeds', CAST(NULL AS STRING), 87, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('WJ', 'Westjet Vacations', CAST(NULL AS STRING), 88, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HO', 'HotUSA', CAST(NULL AS STRING), 89, CAST(NULL AS BOOL), CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel_group`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel_group` (
+  code, name, sort, description, is_active, insert_date, updated_date
+)
+VALUES
+  ('CRS', 'Central Reservations System', CAST(NULL AS INT64), CAST(NULL AS STRING), TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('PMS', 'Property Management System', CAST(NULL AS INT64), CAST(NULL AS STRING), TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
+
+TRUNCATE TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel`;
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_channel` (
+  code, name, description, sort, channel_group_code, is_active, insert_date, updated_date
+)
+VALUES
+  ('BE', 'Booking Engine', CAST(NULL AS STRING), 1, 'CRS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('VO', 'Voice', CAST(NULL AS STRING), 2, 'CRS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('GD', 'Global Distribution System', CAST(NULL AS STRING), 3, 'GDS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('HD', 'Hotel Direct', CAST(NULL AS STRING), 4, 'PMS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('DC', 'Direct Connect', CAST(NULL AS STRING), 5, 'CRS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('SM', 'SiteMinder', CAST(NULL AS STRING), 6, 'CRS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
+  ('TR', 'HotelTrader', CAST(NULL AS STRING), 7, 'CRS', TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE));
