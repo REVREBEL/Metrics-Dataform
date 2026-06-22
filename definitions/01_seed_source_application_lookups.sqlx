@@ -1,0 +1,69 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["01_create_source_application_tables"],
+  tags: ["seed", "core", "lookups", "source", "applications"]
+}
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_system_type` (
+  code, name, description, sort, is_active, insert_date, updated_date
+)
+WITH seed_rows AS (
+  SELECT *
+  FROM UNNEST([
+    STRUCT('PMS' AS code, 'Property Management System' AS name, 'Property Management System' AS description, 1 AS sort, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('CRS' AS code, 'Central Reservation System' AS name, 'Central Reservation System' AS description, 2 AS sort, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('RMS' AS code, 'Revenue Management System' AS name, 'Revenue Management System' AS description, 3 AS sort, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('S&C' AS code, 'Sales & Catering System' AS name, 'Sales & Catering System' AS description, 4 AS sort, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('BIT' AS code, 'Business Intelligence Platform' AS name, 'Business Intelligence Platform' AS description, 5 AS sort, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date)
+  ])
+)
+SELECT
+  code, name, description, sort, is_active, insert_date, updated_date
+FROM seed_rows AS s
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_system_type` AS t
+  WHERE t.code IS NOT DISTINCT FROM s.code
+    AND t.name IS NOT DISTINCT FROM s.name
+    AND t.description IS NOT DISTINCT FROM s.description
+    AND t.sort IS NOT DISTINCT FROM s.sort
+    AND t.is_active IS NOT DISTINCT FROM s.is_active
+    AND t.insert_date IS NOT DISTINCT FROM s.insert_date
+    AND t.updated_date IS NOT DISTINCT FROM s.updated_date
+);
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_application` (
+  code, name, short_name, description, sort, source_system_type_code, vendor, is_active, insert_date, updated_date
+)
+WITH seed_rows AS (
+  SELECT *
+  FROM UNNEST([
+    STRUCT('OPCL' AS code, 'Opera Cloud' AS name, 'Opera' AS short_name, 'Opera Cloud' AS description, 1 AS sort, 'PMS' AS source_system_type_code, 'Oracle' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('STAY' AS code, 'Stay in Touch' AS name, 'Stay In Touch' AS short_name, 'Stay in Touch' AS description, 2 AS sort, 'PMS' AS source_system_type_code, 'Stay In Touch' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('IDG2' AS code, 'IDeas RMS G2' AS name, 'IDeas' AS short_name, 'IDeas RMS G2' AS description, 3 AS sort, 'RMS' AS source_system_type_code, 'IDeas' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('IDG3' AS code, 'IDeas RMS G2' AS name, 'IDeas' AS short_name, 'IDeas RMS G2' AS description, 4 AS sort, 'RMS' AS source_system_type_code, 'IDeas' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('DUET' AS code, 'Duetto RMS' AS name, 'Duetto' AS short_name, 'Duetto RMS' AS description, 5 AS sort, 'RMS' AS source_system_type_code, 'Duetto' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('D360' AS code, 'Demand360' AS name, 'Demand360' AS short_name, 'Demand360' AS description, 6 AS sort, 'BIT' AS source_system_type_code, 'TravelClick' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('R360' AS code, 'Rate360' AS name, 'Rate360' AS short_name, 'Rate360' AS description, 7 AS sort, 'BIT' AS source_system_type_code, 'TravelClick' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('LTHO' AS code, 'Lighthouse' AS name, 'Lighthouse' AS short_name, 'Lighthouse' AS description, 8 AS sort, 'BIT' AS source_system_type_code, 'Lighthouse' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date),
+    STRUCT('STAR' AS code, 'CoStar' AS name, 'CoStar' AS short_name, 'CoStar' AS description, 9 AS sort, 'BIT' AS source_system_type_code, 'CoStar' AS vendor, TRUE AS is_active, NULL AS insert_date, NULL AS updated_date)
+  ])
+)
+SELECT
+  code, name, short_name, description, sort, source_system_type_code, vendor, is_active, insert_date, updated_date
+FROM seed_rows AS s
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_source_application` AS t
+  WHERE t.code IS NOT DISTINCT FROM s.code
+    AND t.name IS NOT DISTINCT FROM s.name
+    AND t.short_name IS NOT DISTINCT FROM s.short_name
+    AND t.description IS NOT DISTINCT FROM s.description
+    AND t.sort IS NOT DISTINCT FROM s.sort
+    AND t.source_system_type_code IS NOT DISTINCT FROM s.source_system_type_code
+    AND t.vendor IS NOT DISTINCT FROM s.vendor
+    AND t.is_active IS NOT DISTINCT FROM s.is_active
+    AND t.insert_date IS NOT DISTINCT FROM s.insert_date
+    AND t.updated_date IS NOT DISTINCT FROM s.updated_date
+);
