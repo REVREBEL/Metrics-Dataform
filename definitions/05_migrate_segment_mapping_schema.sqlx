@@ -1,0 +1,12 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["05_create_segment_tables"],
+  tags: ["migration", "core", "mappings", "segment"]
+}
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_segment`
+ADD COLUMN IF NOT EXISTS source_application_code STRING
+OPTIONS(
+  description="Granular source application code providing the segment value. Joins to lkp_source_application.code."
+);
