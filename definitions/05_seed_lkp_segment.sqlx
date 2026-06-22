@@ -1,0 +1,66 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["05_create_segment_tables"],
+  tags: ["seed", "core", "lookups"]
+}
+
+INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment` (
+  code, name, description, sort, segment_group_code, is_active, insert_date, updated_date
+)
+WITH seed_rows AS (
+  SELECT SPLIT(row_value, "|") AS parts
+  FROM UNNEST([
+    'RE|Transient Retail|Transient Retail|11|TRE|true||',
+    'CN|Transient Consortia|Transient Consortia|12|TNG|true||',
+    'NG|Transient Negotiated|Transient Negotiated|13|TNG|true||',
+    'QD|Transient Qualified|Transient Qualified|15|TQD|true||',
+    'GV|Transient Government|Transient Government|16|TQD|true||',
+    'UQ|Transient Unqualified|Transient Unqualified|17|TUQ|true||',
+    'PR|Transient Promotion|Transient Promotion|17|TQD|true||',
+    'PK|Transient Package|Transient Package|18|TQD|true||',
+    'WH|Transient Wholesale|Transient Wholesale|19|TWH|true||',
+    'OP|Transient Opaque|Transient Opaque|20|TUQ|true||',
+    'GA|Group Association|Group Association|31|GGA|true||',
+    'CY|Group Citywide|Group Citywide|32|GGA|true||',
+    'GY|Group Citywide|Group Citywide|32|GGA|true||',
+    'GC|Group Corporate|Group Corporate|33|GGC|true||',
+    'GI|Group Incentive|Group Incentive|34|GGS|true||',
+    'GT|Group Tour|Group Tour|36|GGT|true||',
+    'GG|Group Government|Group Government|37|GGG|true||',
+    'GS|Group SMERF|Group SMERF|46|GGS|true||',
+    'GO|Group Social|Group Social|47|GGS|true||',
+    'GE|Group Entertainment|Group Entertainment|48|GGS|true||',
+    'GW|Group Wedding|Group Wedding|49|GGS|true||',
+    'CT|Contract|Contract|50|CCT|true||',
+    'CO|Complimentary|Complimentary|60|CCO|true||',
+    'HS|House|House|70|CCO|true||',
+    'NS|No Show|No Show|80|RNS|true||'
+  ]) AS row_value
+),
+s AS (
+  SELECT
+    NULLIF(parts[SAFE_OFFSET(0)], '') AS code,
+    NULLIF(parts[SAFE_OFFSET(1)], '') AS name,
+    NULLIF(parts[SAFE_OFFSET(2)], '') AS description,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(3)], '') AS INT64) AS sort,
+    NULLIF(parts[SAFE_OFFSET(4)], '') AS segment_group_code,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(5)], '') AS BOOL) AS is_active,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(6)], '') AS DATE) AS insert_date,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(7)], '') AS DATE) AS updated_date
+  FROM seed_rows
+)
+SELECT code, name, description, sort, segment_group_code, is_active, insert_date, updated_date
+FROM s
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment` AS t
+  WHERE t.code IS NOT DISTINCT FROM s.code
+    AND t.name IS NOT DISTINCT FROM s.name
+    AND t.description IS NOT DISTINCT FROM s.description
+    AND t.sort IS NOT DISTINCT FROM s.sort
+    AND t.segment_group_code IS NOT DISTINCT FROM s.segment_group_code
+    AND t.is_active IS NOT DISTINCT FROM s.is_active
+    AND t.insert_date IS NOT DISTINCT FROM s.insert_date
+    AND t.updated_date IS NOT DISTINCT FROM s.updated_date
+);
