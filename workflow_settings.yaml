@@ -1,4 +1,4 @@
-defaultProject: revrebel-metrics
+defaultProject: dovetailco
 defaultDataset: stg
 defaultAssertionDataset: dataform_assertions
 defaultLocation: us-central1
