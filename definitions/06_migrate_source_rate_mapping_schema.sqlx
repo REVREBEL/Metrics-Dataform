@@ -1,0 +1,18 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["06_create_source_channel_rate_tables"],
+  tags: ["migration", "core", "mappings", "source", "rate"]
+}
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_source`
+ADD COLUMN IF NOT EXISTS source_application_code STRING
+OPTIONS(
+  description="Granular source application code providing the source or subsource value. Joins to lkp_source_application.code."
+);
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.map_rate`
+ADD COLUMN IF NOT EXISTS source_application_code STRING
+OPTIONS(
+  description="Granular source application code providing the rate value. Joins to lkp_source_application.code."
+);
