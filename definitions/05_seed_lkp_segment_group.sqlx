@@ -5,31 +5,42 @@ config {
   tags: ["seed", "core", "lookups"]
 }
 
--- Canonical Metrics lookup values from REVREBEL Global Metrics Settings.
--- Inserts only rows not already present, preserving supplied values verbatim.
-
 INSERT INTO `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group` (
   code, name, description, sort, is_active, insert_date, updated_date
 )
-SELECT
-  s.code, s.name, s.description, s.sort, s.is_active, s.insert_date, s.updated_date
-FROM UNNEST([
-    STRUCT('TRE' AS code, 'Transient Retail', 'Transient Retail', 1, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('TNG' AS code, 'Transient Negotiated', 'Transient Negotiated', 2, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('TQD' AS code, 'Transient Qualified', 'Transient Qualified', 3, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('TUQ' AS code, 'Transient Unqualified', 'Transient Unqualified', 4, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('GGR' AS code, 'Group', 'Group', 5, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('GOV' AS code, 'Government', 'Government', 6, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('WHS' AS code, 'Wholesale', 'Wholesale', 7, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('CNT' AS code, 'Contract', 'Contract', 8, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('CMP' AS code, 'Complimentary', 'Complimentary', 9, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('HSE' AS code, 'House Use', 'House Use', 10, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('TUQ' AS code, 'Transient Unqualified', 'Transient Unqualified', 11, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('GGS' AS code, 'Group Government Social', 'Group Government Social', 12, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('GGS' AS code, 'Group Government Social', 'Group Government Social', 13, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('OTH' AS code, 'Other', 'Other', 14, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE)),
-    STRUCT('UNM' AS code, 'Unmapped', 'Unmapped', 99, TRUE, CAST(NULL AS DATE), CAST(NULL AS DATE))
-]) AS s
+WITH seed_rows AS (
+  SELECT SPLIT(row_value, "|") AS parts
+  FROM UNNEST([
+    'TRE|Transient Retail|Transient Retail|1|true||',
+    'TNG|Transient Negotiated|Transient Negotiated|2|true||',
+    'TQD|Transient Qualified|Transient Qualified|3|true||',
+    'TUQ|Transient Discount|Transient Discount|4|true||',
+    'TWH|Transient Wholesale|Transient Wholesale|5|true||',
+    'TUQ|Transient Discount|Transient Discount|6|true||',
+    'GGA|Group Association|Group Association|7|true||',
+    'GGC|Group Corporate|Group Corporate|8|true||',
+    'GGS|Group SMERF|Group SMERF|9|true||',
+    'GGT|Group Tour|Group Tour|10|true||',
+    'GGG|Group Government|Group Government|11|true||',
+    'GGS|Group SMERF|Group SMERF|12|true||',
+    'CCT|Contract|Contract|13|true||',
+    'CCO|Complimentary|Complimentary|14|true||',
+    'RNS|Other Room Revenue|Other Room Revenue|15|true||'
+  ]) AS row_value
+),
+s AS (
+  SELECT
+    NULLIF(parts[SAFE_OFFSET(0)], '') AS code,
+    NULLIF(parts[SAFE_OFFSET(1)], '') AS name,
+    NULLIF(parts[SAFE_OFFSET(2)], '') AS description,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(3)], '') AS INT64) AS sort,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(4)], '') AS BOOL) AS is_active,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(5)], '') AS DATE) AS insert_date,
+    SAFE_CAST(NULLIF(parts[SAFE_OFFSET(6)], '') AS DATE) AS updated_date
+  FROM seed_rows
+)
+SELECT code, name, description, sort, is_active, insert_date, updated_date
+FROM s
 WHERE NOT EXISTS (
   SELECT 1
   FROM `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_segment_group` AS t
