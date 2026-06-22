@@ -1,0 +1,12 @@
+config {
+  type: "operations",
+  hasOutput: false,
+  dependencies: ["06_create_source_channel_rate_tables"],
+  tags: ["migration", "core", "lookups", "source", "subsource"]
+}
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_core.lkp_subsource`
+ADD COLUMN IF NOT EXISTS source_code STRING
+OPTIONS(
+  description="Standard parent source code. Joins to lkp_source.code."
+);
