@@ -12,17 +12,45 @@ SELECT *
 FROM `${dataform.projectConfig.defaultDatabase}.stg.stg_pace_property`
 WHERE 1 = 0;
 
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_property`
+ADD COLUMN IF NOT EXISTS available_rms INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_property`
+ADD COLUMN IF NOT EXISTS rms_otb INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_property`
+ADD COLUMN IF NOT EXISTS rev_otb NUMERIC;
+
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_segment` AS
 SELECT *
 FROM `${dataform.projectConfig.defaultDatabase}.stg.stg_pace_segment`
 WHERE 1 = 0;
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_segment`
+ADD COLUMN IF NOT EXISTS available_rms INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_segment`
+ADD COLUMN IF NOT EXISTS rms_otb INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_segment`
+ADD COLUMN IF NOT EXISTS rev_otb NUMERIC;
 
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomclass` AS
 SELECT *
 FROM `${dataform.projectConfig.defaultDatabase}.stg.stg_pace_roomclass`
 WHERE 1 = 0;
 
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomclass`
+ADD COLUMN IF NOT EXISTS available_rms INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomclass`
+ADD COLUMN IF NOT EXISTS rms_otb INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomclass`
+ADD COLUMN IF NOT EXISTS rev_otb NUMERIC;
+
 CREATE TABLE IF NOT EXISTS `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomtype` AS
 SELECT *
 FROM `${dataform.projectConfig.defaultDatabase}.stg.stg_pace_roomtype`
 WHERE 1 = 0;
+
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomtype`
+ADD COLUMN IF NOT EXISTS available_rms INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomtype`
+ADD COLUMN IF NOT EXISTS rms_otb INT64;
+ALTER TABLE `${dataform.projectConfig.defaultDatabase}.metrics_pace.snap_pace_roomtype`
+ADD COLUMN IF NOT EXISTS rev_otb NUMERIC;

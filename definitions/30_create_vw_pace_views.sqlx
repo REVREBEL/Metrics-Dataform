@@ -1,6 +1,7 @@
 config {
   type: "operations",
   hasOutput: false,
+  dependencies: ["20_create_snap_pace_tables"],
   tags: ["ddl", "views", "pace"]
 }
 
